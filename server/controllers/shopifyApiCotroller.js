@@ -7,14 +7,13 @@ import SessionModel from "../models/SessionModels.js";
 const cryption = new Cryptr(process.env.ENCRYPTION_STRING);
 
 export const getAllSegment = async (req, res) => {
+
   try {
+
     const shop = req.query.shop;
     
-    const sessionDetail = await SessionModel.findOne({where : {shop : shop}})
+    const [ , sessionDetail] = await SessionModel.findAll({where : {shop : shop}})
      
-
-    // const sessionDetail = await SessionModel.findOne({ shop: shop });
-
     if (sessionDetail === null) {
       return undefined;
     }
@@ -22,9 +21,7 @@ export const getAllSegment = async (req, res) => {
       return undefined;
     }
 
-    const sessionObj = JSON.parse(cryption.decrypt(sessionDetail.content));
-
-    const { accessToken } = sessionObj;
+    const { accessToken } = JSON.parse(cryption.decrypt(sessionDetail.content));
 
     const shopifyGraphQLEndpoint = `https://${sessionDetail.shop}/admin/api/2023-04/graphql.json`;
 
@@ -44,42 +41,39 @@ export const getAllSegment = async (req, res) => {
       }
     `;
 
-    const axiosConfig = {
+    const axiosShopifyConfig = {
       headers: {
         "Content-Type": "application/json",
         "X-Shopify-Access-Token": accessToken,
       },
     };
 
-    const response = await axios.post(
+    const fetchSegment = await axios.post(
       shopifyGraphQLEndpoint,
       { query: graphqlQuery },
-      axiosConfig
+      axiosShopifyConfig
     );
 
-    const segments = response?.data?.data?.segments?.edges?.map((edge) => edge.node);
+    const segments = fetchSegment?.data?.data?.segments?.edges?.map((edge) => edge.node);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       segments
     });
 
   } catch (error) {
-    console.error("Error:", error);
     res.status(500).json({ success: false, message : error.message });
   }
 };
 
 export const getProduct = async (req, res) => {
+
   try {
 
-    console.log("Enter inside the product")
     const shop = req.query.shop;
     
-    const sessionDetail = await SessionModel.findOne({where : {shop : shop}})
-     
-    // const sessionDetail = await SessionModel.findOne({ shop: shop });
-
+    const [ , sessionDetail] = await SessionModel.findAll({where : {shop : shop}})
+  
     if (sessionDetail === null) {
       return undefined;
     }
@@ -87,9 +81,7 @@ export const getProduct = async (req, res) => {
       return undefined;
     }
 
-    const sessionObj = JSON.parse(cryption.decrypt(sessionDetail.content));
-
-    const { accessToken } = sessionObj;
+    const { accessToken } = JSON.parse(cryption.decrypt(sessionDetail.content));
 
     const shopifyGraphQLEndpoint = `https://${sessionDetail.shop}/admin/api/2023-04/graphql.json`;
 
@@ -106,30 +98,27 @@ export const getProduct = async (req, res) => {
       }
     `;
 
-    const axiosConfig = {
+    const axiosShopifyConfig = {
       headers: {
         "Content-Type": "application/json",
         "X-Shopify-Access-Token": accessToken,
       },
     };
 
-    const response = await axios.post(
+    const fetchProducts = await axios.post(
       shopifyGraphQLEndpoint,
       { query: graphqlQuery },
-      axiosConfig
+      axiosShopifyConfig
     );
 
-    console.log(response)
+    const products = fetchProducts?.data?.data?.products?.edges?.map((edge) => edge.node);
 
-    const products = response?.data?.data?.products?.edges?.map((edge) => edge.node);;
-console.log(products)
     return res.status(200).json({
       success: true,
       products
     });
 
   } catch (error) {
-    console.error("Error:", error);
     res.status(500).json({ success: false, message : error.message });
   }
 };

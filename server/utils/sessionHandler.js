@@ -45,8 +45,10 @@ const storeSession = async (session) => {
 const loadSession = async (id) => {
 
   const sessionResult = await SessionModel.findOne({ where : {id :  id}} )
+  const sessionRes = await SessionModel.findAll({ where : {id :  id}} )
 
-  // const sessionResult = await SessionModel.findOne({ id });
+  console.log(sessionRes)
+
   if (sessionResult === null) {
     return undefined;
   }
@@ -60,7 +62,6 @@ const loadSession = async (id) => {
 
 const deleteSession = async (id) => {
   await SessionModel.destroy({where : {id : id}})
-  // await SessionModel.deleteMany({ id });
   return true;
 };
 

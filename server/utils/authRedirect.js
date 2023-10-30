@@ -1,9 +1,9 @@
 import shopify from "./shopifyConfig.js";
 
 const authRedirect = async (req, res) => {
+  
   if (!req.query.shop) {
-    res.status(500);
-    return res.send("No shop provided");
+    return res.status(500).send("No shop provided");
   }
 
   if (req.query.embedded === "1") {

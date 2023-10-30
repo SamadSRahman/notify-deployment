@@ -1,7 +1,6 @@
 import "@shopify/shopify-api/adapters/node";
 import "dotenv/config";
 import Express from "express";
-// import mongoose from "mongoose";
 import { resolve } from "path";
 import shopify from "./utils/shopifyConfig.js";
 import cors from "cors"
@@ -26,22 +25,14 @@ import webhookRegistrar from "./webhooks/index.js";
 
 setupCheck(); // Run a check to ensure everything is setup properly
 
-
 const PORT = parseInt(process.env.PORT, 10) || 8081;
 const isDev = process.env.NODE_ENV === "dev";
 
-// MongoDB Connection
-// const mongoUrl =
-//   process.env.MONGO_URL || "mongodb+srv://Monalisamishra:MDYlL3MKtGxQa59a@cluster0.7zrfpkj.mongodb.net/notify";
 
-// mongoose.connect(mongoUrl);
-
-
- sequelize.sync().then(() => {
+sequelize.sync().then(() => {
    console.log('Database synced');
 });
  
-
 // Register all webhook handlers
 webhookRegistrar();
 

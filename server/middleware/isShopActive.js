@@ -1,6 +1,7 @@
 import StoreModel from "../models/StoreModels.js";
 
 const isShopActive = async (req, res, next) => {
+
   const { shop, host } = req.query;
 
   if (!shop) {
@@ -10,9 +11,8 @@ const isShopActive = async (req, res, next) => {
 
   const isShopAvaialble = await StoreModel.findOne({where : {shop : shop}})
 
-  // const isShopAvaialble = await StoreModel.findOne({ shop });
-
   if (isShopAvaialble === null || !isShopAvaialble.isActive) {
+
     if (isShopAvaialble === null) {
 
       await StoreModel.create({
@@ -20,7 +20,6 @@ const isShopActive = async (req, res, next) => {
         isActive : false
       })
 
-      // await StoreModel.create({ shop, isActive: false });
     } else if (!isShopAvaialble.isActive) {
 
       await StoreModel.update(
@@ -34,6 +33,7 @@ const isShopActive = async (req, res, next) => {
       )
       // await StoreModel.findOneAndUpdate({ shop }, { isActive: false });
     }
+    
     res.redirect(`/auth?shop=${shop}&host=${host}`);
   } else {
     next();

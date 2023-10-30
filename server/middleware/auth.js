@@ -9,6 +9,7 @@ import sessionHandler from "../utils/sessionHandler.js";
 import shopify from "../utils/shopifyConfig.js";
 
 const authMiddleware = (app) => {
+  
   app.get("/auth", async (req, res) => {
     try {
       await authRedirect(req, res);
@@ -31,20 +32,21 @@ const authMiddleware = (app) => {
   });
 
   app.get("/auth/tokens", async (req, res) => {
+
     try {
       const callbackResponse = await shopify.auth.callback({
         rawRequest: req,
         rawResponse: res,
       });
+
       const { session } = callbackResponse;
-      // console.log(session)
-      // process.env.shopify_token = session?.Session?.accessToken
-      // console.log(session?.session?.accessToken)
+
       await sessionHandler.storeSession(session);
 
       const webhookRegisterResponse = await shopify.webhooks.register({
         session,
       }); //Register all webhooks with offline token
+
       console.dir(webhookRegisterResponse, { depth: null }); //This is an array that includes all registry responses.
 
       return await shopify.auth.begin({
@@ -54,6 +56,7 @@ const authMiddleware = (app) => {
         rawRequest: req,
         rawResponse: res,
       });
+
     } catch (e) {
       console.error(`---> Error at /auth/tokens`, e);
       const { shop } = req.query;
@@ -73,6 +76,7 @@ const authMiddleware = (app) => {
   });
 
   app.get("/auth/callback", async (req, res) => {
+
     try {
       const callbackResponse = await shopify.auth.callback({
         rawRequest: req,
@@ -81,9 +85,7 @@ const authMiddleware = (app) => {
 
       const { session } = callbackResponse;
       await sessionHandler.storeSession(session);
-      // console.log(session);
-      // const { accessToken } = session || {}; // Use default empty object in case session is undefined
-      // console.log(accessToken);
+
       const host = req.query.host;
       const { shop } = session;
 
@@ -97,7 +99,7 @@ const authMiddleware = (app) => {
 
       if(!created){
 
-        await StoreModel.update(
+        await StoreModel.update(//Update store to true after auth has happened, or it'll cause reinstall issues.
           {
             isActive : true,
             limit : 1
@@ -108,15 +110,9 @@ const authMiddleware = (app) => {
         )
       }
 
-  
-      // await StoreModel.findOneAndUpdate(
-      //   { shop },
-      //   { isActive: true },
-      //   { upsert: true }
-      // ); //Update store to true after auth has happened, or it'll cause reinstall issues.
-
       // Redirect to app with shop parameter upon auth
       res.redirect(`/?shop=${shop}&host=${host}`);
+
     } catch (e) {
       console.error(`---> Error at /auth/callback`, e);
       const { shop } = req.query;

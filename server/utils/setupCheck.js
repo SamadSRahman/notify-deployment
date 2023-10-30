@@ -46,11 +46,6 @@ const setupCheck = () => {
     }
   }
 
-  if (typeof databaseURL === "undefined") {
-    console.error("---> Database string is undefined.");
-    errorCount++;
-  }
-
   if (!forceInstall) {
     console.error(
       `--> Set NPM_CONFIG_FORCE to true so server uses "npm i --force" and install dependencies successfully`

@@ -25,9 +25,9 @@ export const getServerKey = async (req, res) => {
 
     const serverKey = sessionDetail.serverKey;
 
-    return res.status(200).json({ 
-      success: true, 
-      serverKey: serverKey 
+    return res.status(200).json({
+      success: true,
+      serverKey: serverKey
     });
 
   } catch (error) {
@@ -90,7 +90,7 @@ export const sendNotification = async (req, res) => {
       })
     }
 
-    const [ , sessionDetail] = await SessionModel.findAll({ where: { shop: shop } })
+    const [, sessionDetail] = await SessionModel.findAll({ where: { shop: shop } })
 
     if (sessionDetail === null) {
       return undefined;
@@ -99,7 +99,7 @@ export const sendNotification = async (req, res) => {
       return undefined;
     }
 
-    const {accessToken} = JSON.parse(cryption.decrypt(sessionDetail.content));
+    const { accessToken } = JSON.parse(cryption.decrypt(sessionDetail.content));
 
     const shopifyGraphQLEndpoint = `https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`;
 
@@ -116,7 +116,7 @@ export const sendNotification = async (req, res) => {
     const axiosShopifyConfig = {
       headers: {
         "Content-Type": "application/json",
-        "X-Shopify-Access-Token": "shpua_a1f2060ad6fd87c36e94d18921d30368" || accessToken, // remove static value add because we haven't access of user
+        "X-Shopify-Access-Token":  "shpua_f05f3b7f825fbc50ecdc4b6a275a028c" || accessToken, // remove static value add because we haven't access of user
       },
     };
 
@@ -131,8 +131,8 @@ export const sendNotification = async (req, res) => {
     const topicName = name.replace(/\W+/g, '_'); // Replace non-alphanumeric characters with underscores
 
     const customerSegmentBulkQuery = `
-mutation {
-  bulkOperationRunQuery(
+   mutation {
+   bulkOperationRunQuery(
    query: """
    {
     customerSegmentMembers(
@@ -162,7 +162,8 @@ mutation {
       message
     }
   }
-}`
+    }`
+
     const customersBulkIdResponse = await axios.post(shopifyGraphQLEndpoint, { query: customerSegmentBulkQuery }, axiosShopifyConfig);
 
     const operationId = (customersBulkIdResponse?.data?.data?.bulkOperationRunQuery?.bulkOperation?.id) + ""
@@ -200,9 +201,8 @@ mutation {
     }
 
     // Continue to retrieve the URL
-    const operationQuery = `
-{
-  node(id: "${operationId}") {
+    const operationQuery = `{
+    node(id: "${operationId}") {
     ... on BulkOperation {
       url
       partialDataUrl
@@ -259,6 +259,8 @@ mutation {
     if (click_action) {
       sendMessage.notification["click_action"] = click_action
     }
+
+    console.log("click action", sendMessage.notification["click_action"])
 
     //axios request for sendingPushNotification
     const sendNotification = await axios.post(

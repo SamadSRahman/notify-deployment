@@ -1,6 +1,6 @@
 import "@shopify/shopify-api/adapters/node";
 import "dotenv/config";
-import Express from "express";
+import express from "express";
 import { resolve } from "path";
 import shopify from "./utils/shopifyConfig.js";
 import cors from "cors"
@@ -36,7 +36,7 @@ sequelize.sync().then(() => {
 // Register all webhook handlers
 webhookRegistrar();
 
-const app = Express();
+const app = express();
 app.use(cors())
 
 const createServer = async (root = process.cwd()) => {
@@ -47,7 +47,7 @@ const createServer = async (root = process.cwd()) => {
   // Incoming webhook requests
   app.post(
     "/webhooks/:topic",
-    Express.text({ type: "*/*" }),
+    express.text({ type: "*/*" }),
     async (req, res) => {
       const { topic } = req.params || "";
       const shop = req.headers["x-shopify-shop-domain"] || "";
@@ -71,7 +71,7 @@ const createServer = async (root = process.cwd()) => {
     }
   );
 
-  app.use(Express.json());
+  app.use(express.json());
 
   app.post("/graphql", verifyRequest, async (req, res) => {
     try {
@@ -132,24 +132,34 @@ const createServer = async (root = process.cwd()) => {
     }
   });
 
-  if (!isDev) {
-    const compression = await import("compression").then(
-      ({ default: fn }) => fn
-    );
-    const serveStatic = await import("serve-static").then(
-      ({ default: fn }) => fn
-    );
-    const fs = await import("fs");
+  if(process.env.NODE_ENV == "production"){
 
-    app.use(compression());
-    app.use(serveStatic(resolve("dist/client")));
-    app.use("/*", (req, res, next) => {
-      res
-        .status(200)
-        .set("Content-Type", "text/html")
-        .send(fs.readFileSync(`${root}/dist/client/index.html`));
-    });
+    const path = require('path')
+
+    app.get("/" , (req , res)=>{
+      app.use(express.static(path.resolve(__dirname , 'dist' , 'client' )))
+      res.sendFile(path.resolve(__dirname , "dist" , "client" , "index.html"))
+    }) 
   }
+
+  // if (!isDev) {
+  //   const compression = await import("compression").then(
+  //     ({ default: fn }) => fn
+  //   );
+  //   const serveStatic = await import("serve-static").then(
+  //     ({ default: fn }) => fn
+  //   );
+  //   const fs = await import("fs");
+
+  //   app.use(compression());
+  //   app.use(serveStatic(resolve("dist/client")));
+  //   app.use("/*", (req, res, next) => {
+  //     res
+  //       .status(200)
+  //       .set("Content-Type", "text/html")
+  //       .send(fs.readFileSync(`${root}/dist/client/index.html`));
+  //   });
+  // }
 
   return { app };
 };

@@ -7,7 +7,7 @@
     ],
     "routes": [
         {
-            "src": "/apps/.*",
+            "src": "/.*",
             "dest": "./server/index.js"
         }
     ]

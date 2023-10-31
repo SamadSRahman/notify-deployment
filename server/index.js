@@ -31,6 +31,8 @@ const isDev = process.env.NODE_ENV === "dev";
 
 sequelize.sync().then(() => {
    console.log('Database synced');
+}).catch((err)=>{
+  console.log(err)
 });
  
 // Register all webhook handlers

@@ -132,34 +132,34 @@ const createServer = async (root = process.cwd()) => {
     }
   });
 
-  if(process.env.NODE_ENV == "production"){
+  // if(process.env.NODE_ENV == "production"){
 
-    const path = require('path')
+  //   const path = require('path')
 
-    app.get("/" , (req , res)=>{
-      app.use(express.static(path.resolve(__dirname , 'dist' , 'client' )))
-      res.sendFile(path.resolve(__dirname , "dist" , "client" , "index.html"))
-    }) 
-  }
-
-  // if (!isDev) {
-  //   const compression = await import("compression").then(
-  //     ({ default: fn }) => fn
-  //   );
-  //   const serveStatic = await import("serve-static").then(
-  //     ({ default: fn }) => fn
-  //   );
-  //   const fs = await import("fs");
-
-  //   app.use(compression());
-  //   app.use(serveStatic(resolve("dist/client")));
-  //   app.use("/*", (req, res, next) => {
-  //     res
-  //       .status(200)
-  //       .set("Content-Type", "text/html")
-  //       .send(fs.readFileSync(`${root}/dist/client/index.html`));
-  //   });
+  //   app.get("/" , (req , res)=>{
+  //     app.use(express.static(path.resolve(__dirname , 'dist' , 'client' )))
+  //     res.sendFile(path.resolve(__dirname , "dist" , "client" , "index.html"))
+  //   }) 
   // }
+
+  if (!isDev) {
+    const compression = await import("compression").then(
+      ({ default: fn }) => fn
+    );
+    const serveStatic = await import("serve-static").then(
+      ({ default: fn }) => fn
+    );
+    const fs = await import("fs");
+
+    app.use(compression());
+    app.use(serveStatic(resolve("dist/client")));
+    app.use("/*", (req, res, next) => {
+      res
+        .status(200)
+        .set("Content-Type", "text/html")
+        .send(fs.readFileSync(`${root}/dist/client/index.html`));
+    });
+  }
 
   return { app };
 };

@@ -6,7 +6,7 @@ import { Redirect } from "@shopify/app-bridge/actions";
 function useFetch() {
   const app = useAppBridge();
   const fetchFunction = authenticatedFetch(app);
-  
+  console.log("UseFetch From ")
   return async (uri, options) => {
     console.log("useFetch running")
     console.log(`https://${appOrigin}/apps${uri}`)

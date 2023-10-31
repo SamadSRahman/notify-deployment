@@ -76,6 +76,8 @@ export default function LandingPage() {
   }, []);
   useEffect(() => {
     console.log("useEffect running on response");
+    console.log("hi from landingPage line 79")
+    console.log(`https://${appOrigin}`)
     console.log(responseServerKey);
     if (responseServerKey.length === 152) {
       console.log("if condition running", responseServerKey);

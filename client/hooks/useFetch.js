@@ -8,8 +8,8 @@ function useFetch() {
   const fetchFunction = authenticatedFetch(app);
   
   return async (uri, options) => {
-    // console.log("useFetch running")
-    // console.log(`https://${appOrigin}/apps${uri}`)
+    console.log("useFetch running")
+    console.log(`https://${appOrigin}/apps${uri}`)
 
     const response = await fetchFunction(
       uri.startsWith("/")

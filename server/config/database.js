@@ -5,7 +5,7 @@ dotenv.config();
 
 
 const sequelize = new Sequelize({
-  dialect: "mysql",
+  dialect: 'postgres',
   host: process.env.Host,
   username: process.env.User,
   password:  process.env.Password,

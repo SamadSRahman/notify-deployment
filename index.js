@@ -2,26 +2,26 @@ import "@shopify/shopify-api/adapters/node";
 import "dotenv/config";
 import Express from "express";
 import { resolve } from "path";
-import shopify from "./utils/shopifyConfig.js";
+import shopify from "./server/utils/shopifyConfig.js";
 import cors from "cors"
-import sequelize from "./config/database.js"
+import sequelize from "./server/config/database.js"
 
-import sessionHandler from "./utils/sessionHandler.js";
-import csp from "./middleware/csp.js";
-import setupCheck from "./utils/setupCheck.js";
+import sessionHandler from "./server/utils/sessionHandler.js";
+import csp from "./server/middleware/csp.js";
+import setupCheck from "./server/utils/setupCheck.js";
 import {
   customerDataRequest,
   customerRedact,
   shopRedact,
-} from "./controllers/gdpr.js";
-import applyAuthMiddleware from "./middleware/auth.js";
-import isShopActive from "./middleware/isShopActive.js";
-import verifyHmac from "./middleware/verifyHmac.js";
-import verifyProxy from "./middleware/verifyProxy.js";
-import verifyRequest from "./middleware/verifyRequest.js";
-import proxyRouter from "./routes/app_proxy/index.js";
-import router from "./routes/index.js";
-import webhookRegistrar from "./webhooks/index.js";
+} from "./server/controllers/gdpr.js";
+import applyAuthMiddleware from "./server/middleware/auth.js";
+import isShopActive from "./server/middleware/isShopActive.js";
+import verifyHmac from "./server/middleware/verifyHmac.js";
+import verifyProxy from "./server/middleware/verifyProxy.js";
+import verifyRequest from "./server/middleware/verifyRequest.js";
+import proxyRouter from "./server/routes/app_proxy/index.js";
+import router from "./server/routes/index.js";
+import webhookRegistrar from "./server/webhooks/index.js";
 
 setupCheck(); // Run a check to ensure everything is setup properly
 

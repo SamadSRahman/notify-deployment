@@ -83,6 +83,8 @@ setServerKey(responseServerKey)
   },[responseServerKey])
   useEffect(()=>{
     console.log("get Data:", responseServerKey)
+    console.log(`https://${appOrigin}`)
+    console.log("hi from getData line 87")
 if(serverKey.length===152)
 navigate("/createnotification")
   },[])
